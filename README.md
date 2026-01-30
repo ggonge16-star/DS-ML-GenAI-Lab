@@ -1,18 +1,38 @@
-# YouTube Data Cleaning & EDA Project
+# DS-ML-GenAI-Lab 🚀
 
-## About
-This project focuses on fast data cleaning and exploratory data analysis (EDA) on a YouTube dataset using Python.
+This repository contains end-to-end Data Science, Machine Learning, and Generative AI projects built using Python and Power BI.
 
-## Work Done
-- Handled missing and null values
-- Removed duplicates
-- Treated outliers using IQR
-- Fixed data types and formatting
-- Performed univariate and bivariate analysis
-- Created visualizations
+---
 
-## Tools
-Python, Pandas, NumPy, Matplotlib, Seaborn
+## 📌 Projects
 
-## Result
-Clean and structured dataset ready for Machine Learning.
+### 1️⃣ Movie Sales Analysis (Power BI)
+🔗 [Open Project](./Movie-Sales-Analysis)
+
+- Analyzed IMDB movie sales data
+- Built interactive Power BI dashboard
+- Identified revenue trends over years
+- Genre-wise and rating-wise performance
+
+---
+
+### 2️⃣ YouTube Data Cleaning & EDA
+🔗 [Open Project](./YouTube-EDA-Project)
+
+- Cleaned raw YouTube dataset
+- Performed exploratory data analysis (EDA)
+- Visualized trends using Python
+
+---
+
+### 3️⃣ Machine Learning Projects (Coming Soon)
+- Regression
+- Classification
+- Model evaluation
+
+---
+
+### 4️⃣ Generative AI Projects (Coming Soon)
+- LLM apps
+- Prompt engineering
+- AI tools
