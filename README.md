@@ -47,8 +47,3 @@ This repository is created to:
 **Ganesh Babasaheb Gonge**  
 BSc IT | Data Science & ML Enthusiast  
 Skills: Python, SQL, Power BI, ML, DL, GenAI, Linux, AWS  
-
----
-
-⭐ If you find this repository useful, feel free to star it!
-
