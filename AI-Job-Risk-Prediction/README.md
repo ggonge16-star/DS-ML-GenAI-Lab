@@ -1,123 +1,83 @@
-# 🤖 AI Job Risk Prediction using Machine Learning
+# 🚀 AI Job Risk Prediction using Machine Learning
 
-## 📌 Overview
+## 🔥 Project Overview
 
-This project predicts the risk of jobs being impacted by Artificial Intelligence (AI).
-It classifies jobs into three categories:
+This project predicts the risk of job automation using machine learning techniques. Jobs are classified into Low, Medium, and High risk categories based on features such as salary, experience, skills, and job demand.
 
-* 🟢 Low Risk
-* 🟡 Medium Risk
-* 🔴 High Risk
+---
+
+## 💡 Key Highlights
+
+✔️ End-to-End Machine Learning Pipeline
+✔️ Handling of Categorical Data (Ordinal + OneHot Encoding)
+✔️ Model Comparison using Multiple Algorithms
+✔️ Stratified K-Fold Cross Validation
+✔️ Hyperparameter Tuning using RandomizedSearchCV
+✔️ Overfitting Detection & Model Validation
 
 ---
 
 ## 🧠 Problem Statement
 
-With the rapid growth of AI, many jobs are at risk of automation.
-The goal of this project is to build a machine learning model that predicts AI risk levels based on job-related features.
+To predict AI automation risk levels using structured job-related data.
 
 ---
 
-## 📊 Dataset
-
-The dataset contains both categorical and numerical features such as:
-
-* Job Title
-* Primary Skill
-* Salary
-* Salary Bucket
-
-Target Variable:
-
-* `ai_risk_category`
-
----
-
-## 🧹 Data Preprocessing
-
-* Removed irrelevant and redundant features
-* Handled categorical data using **One-Hot Encoding**
-* Performed feature selection using:
-
-  * Chi-Square Test
-  * Cramér’s V
-  * Correlation Analysis
-
----
-
-## ⚙️ Models Used
-
-* Logistic Regression
-* Support Vector Machine (SVM)
-* Random Forest
-* Gradient Boosting
-
----
-
-## 🏆 Final Model
-
-**GradientBoostingClassifier** was selected as the best model because:
-
-* Highest F1-score (~0.84)
-* Balanced performance across all classes
-* No overfitting (Train ≈ Test)
-
----
-
-## 🔧 Hyperparameter Tuning
-
-Used **RandomizedSearchCV** to optimize:
-
-* n_estimators
-* learning_rate
-* max_depth
-* subsample
-
----
-
-## 📈 Evaluation Metrics
-
-* F1 Score
-* Accuracy
-* Confusion Matrix
-* ROC-AUC
-
----
-
-## ✅ Results
-
-* F1 Score: ~0.84
-* Model shows strong generalization
-* Accurate prediction of high-risk jobs
-
----
-
-## ⚖️ Overfitting Check
-
-Train and test scores are very close, indicating a balanced and reliable model.
-
----
-
-## 🛠️ Tech Stack
+## ⚙️ Tech Stack
 
 * Python
 * Scikit-learn
 * XGBoost
 * Pandas, NumPy
-* Matplotlib, Seaborn
 
 ---
 
-## 🚀 Future Improvements
+## 📊 Models Evaluated
 
-* Feature Engineering
-* Ensemble Learning
-* Model Deployment
+* Random Forest
+* Decision Tree
+* KNN
+* XGBoost
+* Gradient Boosting
+* SVC
+* Logistic Regression
+
+---
+
+## 🏆 Final Model
+
+Support Vector Classifier (SVC) with polynomial kernel was selected as the final model based on the highest F1-score and balanced performance.
 
 ---
 
-## 💡 Conclusion
+## 📈 Performance
 
-This project demonstrates a complete machine learning workflow, from data preprocessing to model tuning and evaluation, to predict AI job risk effectively.
+* Accuracy: ~83%
+* F1 Score: ~0.83
 
 ---
+
+## 🧪 Evaluation Strategy
+
+* Stratified K-Fold Cross Validation
+* Weighted F1-score
+* Confusion Matrix & Classification Report
+* Train vs Test comparison
+
+---
+
+## 💾 Model Saving
+
+Final model saved using joblib for deployment and reuse.
+
+---
+
+## 🎯 Conclusion
+
+The model demonstrates strong performance and generalization, making it suitable for predicting job automation risk.
+
+---
+
+## 👨‍💻 Author
+
+Ganesh Gonge
