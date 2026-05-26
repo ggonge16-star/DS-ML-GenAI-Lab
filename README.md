@@ -150,7 +150,7 @@ pip install -r requirements.txt
 |----------|------|
 | 💼 LinkedIn | [linkedin.com/in/ganesh-gonge](https://linkedin.com/in/ganesh-gonge) |
 | 🐙 GitHub | [github.com/GaneshGonge](https://github.com/GaneshGonge) |
-| 📧 Email | *(your email here)* |
+| 📧 Email | *(ggonge16@gmail.com)* |
 
 <br/>
 
