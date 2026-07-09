@@ -1,136 +1,165 @@
-# Customer Booking Prediction – British Airways ✈️
+# ✈️ Customer Booking Prediction – British Airways
 
-**Forage Virtual Internship — British Airways Data Science Job Simulation**
-*Completed: July 2026*
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![XGBoost](https://img.shields.io/badge/XGBoost-2.x-brightgreen)
+![Scikit--learn](https://img.shields.io/badge/Scikit--learn-1.x-orange)
+![F1 Score](https://img.shields.io/badge/F1--Score-0.43-yellow)
+![Recall](https://img.shields.io/badge/Recall-60%25-red)
+![Forage](https://img.shields.io/badge/Forage-British%20Airways-blue)
 
-A complete end-to-end machine learning project that predicts whether a customer will complete a flight booking, built as part of the British Airways Data Science virtual internship on Forage.
+## 📌 Project Overview
 
----
+This project is a Machine Learning based Customer Booking Prediction System developed as part of the **British Airways Data Science Job Simulation** on Forage. The system analyzes customer flight booking data and predicts whether a customer will **complete a booking or not**.
 
-## 📌 Project Background
-
-British Airways provided this task as part of their Data Science job simulation. The business problem: customers today have access to huge amounts of information and often research extensively before buying. This means airlines can no longer afford to be *reactive* (waiting until a customer reaches the airport) — they need to be **proactive**, identifying which customers are likely to complete a booking so they can be targeted early with the right offers.
-
-**Goal:** Build a predictive model that classifies whether a customer will complete a booking (`booking_complete = 1`) or not (`booking_complete = 0`), and identify which factors influence that decision the most.
-
----
-
-## 📊 Data Source
-
-- Dataset: `customer_booking.csv`, provided directly by British Airways through the Forage platform (Data Science Job Simulation, Task 2).
-- **50,000 rows, 14 columns** — includes passenger count, sales channel, trip type, purchase lead time, length of stay, flight timing/route/duration, add-on preferences (baggage, seat, meals), and the target column `booking_complete`.
-- Target distribution was **imbalanced: ~85% did not complete a booking, ~15% did.**
+The model is built using **XGBoost** with a fully custom **Scikit-learn preprocessing pipeline**, handling severe class imbalance (85:15) through `scale_pos_weight` rather than synthetic oversampling. To improve business usability, **feature importance analysis** is used to identify which factors most influence a customer's decision to book, and the findings are summarized in an executive PowerPoint slide.
 
 ---
 
-## 🛠️ What I Did (Step by Step)
+## 🚀 Features
 
-### 1. Exploratory Data Analysis (EDA)
-- Checked shape, data types, duplicates, and missing values.
-- Ran univariate analysis (histograms/boxplots) on numeric columns and countplots on categorical columns.
-- Ran bivariate analysis of each feature against the target.
-- Plotted a correlation heatmap to check for multicollinearity and relationships with the target.
+- Customer Booking Completion Prediction (Binary Classification)
+- End-to-End Preprocessing Pipeline:
+  - Skewness Correction (Log Transformation)
+  - Outlier Capping (IQR Method)
+  - Custom Frequency Encoder for high-cardinality columns
+- Feature Engineering (5 new engineered features)
+- Class Imbalance Handling (SMOTE vs `scale_pos_weight` comparison)
+- Multi-Model Benchmarking (KNN, Random Forest, Decision Tree, Gradient Boosting, XGBoost)
+- Hyperparameter Tuning with RandomizedSearchCV
+- Overfitting Diagnosis (Train vs Test comparison)
+- Threshold Tuning
+- Feature Importance Visualization
+- Executive PowerPoint Summary Reporting
 
-### 2. Data Cleaning
-- Found high positive skew in `num_passengers`, `purchase_lead`, and `length_of_stay` (skew > 1.5).
-- Applied `log1p()` transformation to correct skew.
-- Detected outliers using the IQR method; applied **capping (winsorization)** instead of deleting rows, to correct outliers without losing data.
+---
 
-### 3. Feature Engineering
-Created 5 new features to give the model more signal to work with:
-- `total_extras` — sum of baggage/seat/meal preferences (engagement proxy)
-- `is_weekend` — whether the flight falls on Sat/Sun
-- `flight_hour_category` — bucketed flight hour into Morning/Afternoon/Evening/Night
-- `is_round_trip` — simplified trip type flag
-- `is_last_minute` — flag for short purchase-lead bookings
+## 🛠️ Technologies Used
 
-### 4. Preprocessing Pipeline
-Built a `ColumnTransformer`-based pipeline:
-- **Numeric features** → `StandardScaler`
-- **High-cardinality categoricals** (`route`, `booking_origin` — 799 and 104 unique values respectively) → a **custom Frequency Encoder** (built from scratch as a `BaseEstimator`/`TransformerMixin`), since One-Hot Encoding would have created hundreds of sparse columns and Label Encoding would have implied a false numeric order.
-- **Low-cardinality categoricals** (`sales_channel`, `trip_type`, `flight_day`, `flight_hour_category`) → `OneHotEncoder`
-
-### 5. Handling Class Imbalance
-- First tried **SMOTE** oversampling inside the pipeline (via `imblearn.Pipeline`) — result was underwhelming.
-- Switched to **XGBoost's built-in `scale_pos_weight` parameter**, which handles imbalance through loss-weighting instead of synthetic samples — this gave a significantly better result than SMOTE.
-
-### 6. Model Comparison
-Benchmarked 5 algorithms using **Stratified 5-Fold Cross-Validation** with `scoring='f1'` (F1 was chosen over accuracy because the target is imbalanced, and accuracy would be misleading — a model that always predicts "no booking" would already score ~85% accuracy while being useless):
-
-| Model | F1 Score (CV) |
+| Technology | Usage |
 |---|---|
-| KNN | 0.377 |
-| Random Forest (tuned) | 0.361 |
-| Decision Tree | 0.280 |
-| Gradient Boosting (tuned) | 0.276 |
-| **XGBoost (tuned + `scale_pos_weight`)** | **0.438** ✅ |
-
-### 7. Hyperparameter Tuning
-- Used `RandomizedSearchCV` (5-fold CV, `scoring='f1'`) across multiple rounds — first with SMOTE, then with `scale_pos_weight`, then with a regularization-focused search (lower `max_depth`, higher `min_child_weight`/`gamma`) to reduce overfitting.
-- Final tuned parameters: `n_estimators=300, max_depth=6, learning_rate=0.03, min_child_weight=7, gamma=0.2, subsample=0.7, colsample_bytree=0.6, scale_pos_weight=4`.
-
-### 8. Model Validation
-- Compared train vs. test metrics to check for overfitting — regularization reduced the train–test F1 gap from **0.136 → 0.070**.
-- Ran threshold tuning (testing cutoffs from 0.20–0.70) to confirm the default 0.5 threshold was already optimal, since `scale_pos_weight` had already balanced the model's output probabilities.
-
-### 9. Feature Importance & Reporting
-- Extracted `feature_importances_` from the final XGBoost model and visualized the top 15 predictors.
-- Summarized the full pipeline, results, and business recommendation in a single executive PowerPoint slide (as required by the task brief), aimed at a non-technical manager audience.
+| Python | Core Programming Language |
+| Pandas / NumPy | Data Handling & Numerical Computing |
+| Scikit-learn | Preprocessing Pipeline, Modeling, Evaluation |
+| XGBoost | Final Predictive Model |
+| imbalanced-learn (SMOTE) | Class Imbalance Handling (comparison) |
+| Matplotlib | Feature Importance Visualization |
+| Jupyter Notebook / Google Colab | Development Environment |
+| PowerPoint | Business Reporting |
 
 ---
 
-## 📈 Final Results
+## 📊 Model Performance
 
 | Metric | Train | Test |
 |---|---|---|
-| F1 Score | 0.50 | **0.43** |
+| F1-Score | 0.50 | **0.43** |
 | Precision | 0.39 | 0.34 |
 | Recall | 0.70 | **0.60** |
-| Accuracy | – | 0.76 |
+| Accuracy | – | **0.76** |
 
-**Top predictors of booking completion:** `booking_origin`, `sales_channel` (Mobile), `wants_extra_baggage`, `route`, `flight_duration`.
+**Top Predictors (Feature Importance):** Booking Origin, Sales Channel (Mobile), Wants Extra Baggage, Route, Flight Duration.
 
-### 🆚 Comparison with Forage's Official Reference Solution
-Forage provides an official "example answer" after submission. Comparing the two:
+### 🆚 Comparison vs Forage's Official Reference Solution
 
-| | Official Reference Solution | This Project |
+| Metric | Official Reference | This Project |
 |---|---|---|
 | Precision | 0.70 | 0.34 |
 | **Recall** | **0.003** | **0.60** |
-| Class imbalance handled? | No | Yes (`scale_pos_weight`) |
+| Class Imbalance Handled? | ❌ No | ✅ Yes (`scale_pos_weight`) |
 
-The reference solution's 0.3% recall means it correctly identified only ~3 out of 1,000 actual bookers — effectively defaulting to "always predict no booking." By explicitly handling the 85:15 class imbalance, this project's model catches **60% of real bookers**, making it far more useful for the stated business goal of proactively targeting likely customers.
+The official reference model correctly identified only ~3 out of 1,000 actual bookers (essentially defaulting to "always predict no booking"). By explicitly addressing the 85:15 class imbalance, this project's model catches **60% of real bookers** — making it significantly more useful for proactive customer targeting.
+
+---
+
+## 📊 Workflow
+
+1. Load Customer Booking Dataset (50,000+ records)
+2. Exploratory Data Analysis (Univariate, Bivariate, Correlation)
+3. Data Cleaning — Skewness Correction & Outlier Capping
+4. Feature Engineering (5 new features)
+5. Preprocessing Pipeline (Scaling, Frequency Encoding, One-Hot Encoding)
+6. Class Imbalance Handling (SMOTE → `scale_pos_weight`)
+7. Multi-Model Benchmarking (5-Fold Stratified Cross-Validation)
+8. Hyperparameter Tuning (RandomizedSearchCV)
+9. Overfitting Check (Train vs Test) & Threshold Tuning
+10. Feature Importance Visualization
+11. Executive PowerPoint Summary & Model Export
+
+---
+
+## 🚀 How to Run
+
+```bash
+# Clone repo
+git clone https://github.com/ggonge16-star/customer-booking-prediction
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run notebook
+jupyter notebook Customer_Booking_Prediction_British_Airways.ipynb
+```
+
+---
+
+## 📁 Dataset
+
+- **Source:** Provided by British Airways via Forage (Data Science Job Simulation, Task 2)
+- **Target:** `booking_complete` (0 = No Booking, 1 = Booking Completed)
+- **Total Records:** 50,000+ customer bookings
+- **Class Distribution:** ~85% No Booking, ~15% Booking Completed
+- **Split:** 80% Train, 20% Test (Stratified)
+
+---
+
+## 🎯 Objective
+
+The primary objective of this project is to help British Airways proactively identify customers who are likely to complete a booking, rather than reacting only once a customer arrives at the airport. The system aims to provide accurate, imbalance-aware predictions and interpretable insights into what drives a customer's decision to book.
 
 ---
 
 ## 🧠 Challenges Faced & How I Solved Them
 
-- **Severe class imbalance (85/15 split):** Initial models (default RandomForest/XGBoost) barely predicted the minority class, giving F1 scores as low as 0.17–0.22. Solved by testing SMOTE first, then switching to `scale_pos_weight`, which worked better for tree-based boosting.
-- **High-cardinality categorical columns** (`route`: 799 values, `booking_origin`: 104 values): One-Hot Encoding would have exploded dimensionality and caused sparse, hard-to-learn features. Solved by writing a custom Frequency Encoder transformer compatible with scikit-learn pipelines.
-- **`ColumnTransformer` silently dropping engineered columns:** Learned that any column not explicitly listed in the transformer's column lists gets dropped by default — had to make sure every new engineered feature was added to the correct list (numeric/frequency/nominal).
-- **Overfitting after initial tuning:** A shallower, unconstrained hyperparameter search picked `max_depth=8`, which showed a noticeable train–test gap. Re-tuned with tighter regularization (`max_depth=6`, higher `min_child_weight`/`gamma`) to close the gap while keeping test performance stable.
-- **Diminishing returns:** After several tuning rounds, F1 improvements became marginal (~0.01 or less per round) — recognized this as a sign that the available features had a hard ceiling on predictive power, rather than continuing to over-optimize.
+- **Severe class imbalance (85:15):** Default models barely predicted the minority class (F1 as low as 0.17–0.22). Solved by testing SMOTE first, then switching to XGBoost's `scale_pos_weight`, which performed better.
+- **High-cardinality categorical columns** (`route`: 799 values, `booking_origin`: 104 values): One-Hot Encoding would have created hundreds of sparse columns. Solved by building a custom Frequency Encoder transformer compatible with Scikit-learn pipelines.
+- **ColumnTransformer silently dropping engineered columns:** Learned that any column not explicitly listed in the transformer gets dropped by default — fixed by ensuring every new feature was added to the correct column list.
+- **Overfitting after initial tuning:** An unconstrained search picked `max_depth=8`, causing a noticeable train-test gap. Re-tuned with tighter regularization, reducing the gap from 0.136 to 0.070.
+- **Diminishing returns in tuning:** Recognized when further hyperparameter search gave marginal gains (<0.01 F1), indicating a ceiling in the dataset's predictive signal rather than continuing to over-optimize.
 
 ---
 
-## 🧰 Tech Stack / Skills Used
+## 📷 Output
 
-`Python` · `Pandas` · `NumPy` · `Scikit-learn` · `XGBoost` · `imbalanced-learn (SMOTE)` · `Matplotlib` · `Jupyter Notebook` · `Google Colab` · `PowerPoint` (executive reporting)
-
-**Concepts:** EDA, Skewness Correction, Outlier Treatment (IQR/Winsorization), Feature Engineering, Custom Scikit-learn Transformers, ColumnTransformer Pipelines, Class Imbalance Handling, Stratified K-Fold Cross-Validation, Hyperparameter Tuning (RandomizedSearchCV), Overfitting Diagnosis, Threshold Tuning, Feature Importance Analysis, Business Communication.
+- Booking Completion Prediction (0/1)
+- Precision, Recall, F1-Score & Classification Report
+- Feature Importance Bar Chart (Top 15 Predictors)
+- Confusion Matrix
+- Executive PowerPoint Summary Slide
 
 ---
 
-## 📂 Repository Contents
+## 📁 Repository Contents
 
-- `Customer_Booking_Prediction_British_Airways.ipynb` — full notebook (EDA → cleaning → feature engineering → modeling → evaluation)
-- `customer_booking.csv` — raw dataset
-- `Cleaned_data_Customer_Booking_British_Airways.csv` — cleaned dataset after preprocessing
-- `Customer_Booking_Prediction_Summary.pptx` — executive summary slide
-- `XGBoost_Customer_Booking_Model.pkl` — final saved model pipeline
+- `Customer_Booking_Prediction_British_Airways.ipynb` — Full notebook (EDA → Cleaning → Feature Engineering → Modeling → Evaluation)
+- `customer_booking.csv` — Raw dataset
+- `Cleaned_data_Customer_Booking_British_Airways.csv` — Cleaned dataset
+- `Customer_Booking_Prediction_Summary.pptx` — Executive summary slide
+- `XGBoost_Customer_Booking_Model.pkl` — Final saved model pipeline
 
 ---
 
 ## 🎓 Certification
 
 This project was completed as part of the **British Airways Data Science Job Simulation** on [Forage](https://www.theforage.com).
+
+---
+
+## 👨‍💻 Author
+
+**Ganesh Gonge**
+BSc IT | Machine Learning & Deep Learning Enthusiast
+Passionate about AI, Data Science, and Real-World Machine Learning Applications ❤️📊🚀
+
+- 📧 ggonge16@gmail.com
+- 🔗 [LinkedIn](https://www.linkedin.com/in/ganesh-gonge-369a24277/)
+- 💻 [GitHub](https://github.com/ggonge16-star)
