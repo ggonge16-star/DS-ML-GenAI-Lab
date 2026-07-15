@@ -1,90 +1,96 @@
-# Symptom-to-Disease Classification using Fine-tuned BioBERT
+# 🧬 Symptom-to-Disease Classification using Fine-tuned BioBERT
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.x-orange)
+![Transformers](https://img.shields.io/badge/HuggingFace-Transformers-yellow)
+![Accuracy](https://img.shields.io/badge/Accuracy-97.50%25-green)
+![Streamlit](https://img.shields.io/badge/Streamlit-App-ff4b4b)
 
-A Natural Language Processing project that classifies diseases from patient-written symptom descriptions using a fine-tuned BioBERT (domain-specific Transformer) model.
+## 📌 Project Overview
+This project is an AI-powered Symptom-to-Disease Classification System developed using Natural Language Processing and Transformer-based Deep Learning. The system analyzes patient-written symptom descriptions (free text) and classifies them into 24 disease categories, ranging from skin conditions to infectious and chronic diseases.
 
-## Overview
+The model is built by fine-tuning **BioBERT**, a domain-specific Transformer pretrained on biomedical literature, allowing it to better understand medical language compared to a general-purpose BERT model. Hyperparameter tuning (learning rate, weight decay, warmup steps) was applied to reduce overfitting and improve generalization on unseen symptom text.
 
-This project takes free-text symptom descriptions (e.g., *"I have been experiencing joint pain in my fingers and a silver-like dusting on my skin"*) and predicts the most likely disease out of 24 categories. Unlike traditional keyword-matching systems, this model uses a Transformer-based architecture to understand the semantic meaning and context of symptom descriptions.
+An interactive Streamlit web application allows users to type in their symptoms and instantly receive a predicted disease category along with a confidence score.
 
-## Problem Statement
-
-Manually mapping unstructured symptom text to a disease category is time-consuming and inconsistent. This project automates that process using a fine-tuned biomedical language model, providing a fast, explainable, first-pass classification that could support (not replace) clinical decision-making.
-
-## Dataset
-
-- **Source:** [Symptom2Disease](https://www.kaggle.com/datasets/niyarrbarman/symptom2disease) (Kaggle)
-- **Size:** 1,200 samples across 24 disease categories (50 samples per class, balanced)
-- **Columns:** `text` (symptom description), `label` (disease name)
-
-## Tech Stack
-
-| Category | Tools |
+---
+## 🚀 Features
+- Free-Text Symptom Classification (natural language input)
+- Detection across 24 Disease Categories, including:
+  - Psoriasis, Acne, Fungal Infection, Impetigo
+  - Dengue, Malaria, Typhoid, Chicken pox
+  - Bronchial Asthma, Pneumonia, Common Cold
+  - Diabetes, Hypertension, Migraine, and more
+- Fine-tuned BioBERT (Domain-Specific Transformer)
+- Hyperparameter-Tuned Training (Learning Rate, Weight Decay, Warmup)
+- Overfitting Diagnosis & Correction
+- Confidence Score Prediction
+- Interactive Streamlit Web Application
+- Real-Time Symptom Analysis
+---
+## 🛠️ Technologies Used
+| Technology | Usage |
 |---|---|
-| Language | Python |
-| Model | BioBERT (`dmis-lab/biobert-base-cased-v1.1`) |
-| Framework | Hugging Face Transformers, PyTorch |
-| Data Handling | Pandas, NumPy, Scikit-learn |
-| Evaluation | Confusion Matrix, Classification Report (Precision/Recall/F1) |
-| Visualization | Matplotlib, Seaborn |
-| Deployment | Streamlit |
-
-## Approach
-
-1. **Data Preprocessing** — Cleaned the dataset (null/duplicate checks) and encoded disease labels using `LabelEncoder`.
-2. **Tokenization** — Used the BioBERT tokenizer with `max_length=128`, padding, and truncation to convert symptom text into model-ready tensors.
-3. **Model Fine-tuning** — Fine-tuned `BertForSequenceClassification` (BioBERT weights) on the training split using Hugging Face's `Trainer` API.
-4. **Hyperparameter Tuning** — Tuned learning rate, weight decay, and warmup steps to reduce overfitting and improve generalization.
-5. **Evaluation** — Assessed performance using accuracy, weighted F1-score, per-class classification report, and confusion matrix analysis.
-6. **Deployment** — Built a Streamlit interface for real-time symptom-to-disease prediction.
-
-## Results
-
+| Python | Core Programming Language |
+| PyTorch | Model Training Backend |
+| Hugging Face Transformers | BioBERT Model & Tokenizer |
+| BioBERT | Domain-Specific Transformer Backbone |
+| Scikit-learn | Label Encoding & Evaluation Metrics |
+| Pandas / NumPy | Data Handling |
+| Matplotlib / Seaborn | Confusion Matrix Visualization |
+| Streamlit | Web Application |
+---
+## 📊 Model Performance
 | Metric | Score |
 |---|---|
 | Test Accuracy | **97.50%** |
-| Weighted F1-score | **0.97** |
-| Macro F1-score | 0.98 |
-
-- 19 out of 24 disease categories achieved a perfect (1.00) F1-score.
-- Hyperparameter tuning improved test accuracy from 92.92% to 97.50% (~5% gain) and reduced the train-test accuracy gap from ~5.7% to ~2.5%.
-- Confusion matrix analysis revealed clinically coherent misclassifications (e.g., Dengue vs. Chicken pox, Peptic Ulcer Disease vs. GERD), where real-world symptom overlap explains the model's errors.
-
-## Project Structure
-
-```
-├── Symptom2Disease.csv          # Dataset
-├── symptom_disease_bert.ipynb   # Main notebook (preprocessing, training, evaluation)
-├── biobert_symptom_model/       # Saved fine-tuned model + tokenizer + label encoder
-├── app.py                       # Streamlit web application
-└── README.md
-```
-
-## How to Run
-
+| Train Accuracy | 100% |
+| Weighted F1-Score | **0.97** |
+| Macro F1-Score | 0.98 |
+| Perfect-Score Classes | 19 / 24 |
+---
+## 📊 Workflow
+1. Load & Clean Symptom-Disease Dataset
+2. Encode Disease Labels (Text → Numbers)
+3. Tokenize Symptom Text using BioBERT Tokenizer
+4. Fine-tune BioBERT for 24-Class Classification
+5. Diagnose Overfitting (Train vs Test Accuracy Gap)
+6. Hyperparameter Tuning (Learning Rate, Weight Decay, Warmup)
+7. Evaluate using Confusion Matrix & Classification Report
+8. Deploy via Streamlit Web App
+---
+## 🚀 How to Run
 ```bash
-# Clone the repository
-git clone <your-repo-link>
-cd symptom-to-disease-bert
-
+# Clone repo
+git clone https://github.com/ggonge16-star/symptom-to-disease-bert
 # Install dependencies
-pip install transformers torch scikit-learn pandas numpy matplotlib seaborn streamlit
-
-# Run the Streamlit app
+pip install -r requirements.txt
+# Run app
 streamlit run app.py
 ```
-
-## Limitations
-
-- Trained on a relatively small dataset (1,200 samples); real-world deployment would require a larger and more linguistically diverse dataset for robust generalization.
-- This is a research/portfolio project intended to demonstrate NLP and Transformer fine-tuning skills — **it is not a validated medical diagnostic tool** and should not be used for actual clinical decision-making.
-
-## Future Improvements
-
-- Expand the dataset with more diverse, real-world phrased symptom descriptions.
-- Add attention-weight visualization for explainable predictions (highlighting which words drove the prediction).
-- Experiment with other biomedical Transformers (e.g., ClinicalBERT, PubMedBERT) for comparison.
-
-## Author
-
+---
+## 📁 Dataset
+- **Source:** Kaggle — Symptom2Disease Dataset
+- **Classes:** 24 Diseases (Psoriasis, Dengue, Diabetes, Migraine, etc.)
+- **Total Samples:** 1,200 symptom descriptions (50 per class, balanced)
+- **Split:** 80% Train, 20% Test
+---
+## 🎯 Objective
+The primary objective of this project is to demonstrate how Transformer-based NLP models can understand unstructured, natural-language symptom descriptions and map them to probable disease categories. The system aims to provide a fast, first-pass, explainable classification that could support (not replace) clinical triage and decision-making.
+---
+## 📷 Output
+- Predicted Disease Category
+- Confidence Percentage
+- Classification Report (Precision, Recall, F1-Score)
+- Confusion Matrix Visualization
+---
+## ⚠️ Limitations
+- Trained on a relatively small dataset (1,200 samples); real-world deployment would require a larger, more linguistically diverse dataset.
+- This is a research/portfolio project demonstrating NLP and Transformer fine-tuning skills — **it is not a validated medical diagnostic tool** and should not be used for actual clinical decision-making.
+---
+## 👨‍💻 Author
 **Ganesh Gonge**
-📧 ggonge16@gmail.com | [LinkedIn](#) | [GitHub](#)
+BSc IT | Machine Learning & Deep Learning Enthusiast
+Passionate about AI, NLP, Computer Vision, and Real-World Deep Learning Applications ❤️🧬🚀
+- 📧 ggonge16@gmail.com
+- 🔗 [LinkedIn](https://www.linkedin.com/in/ganesh-gonge-369a24277/)
+- 💻 [GitHub](https://github.com/ggonge16-star)
